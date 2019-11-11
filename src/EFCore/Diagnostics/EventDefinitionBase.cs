@@ -95,9 +95,7 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
         public virtual WarningBehavior GetLogBehavior<TLoggerCategory>(
             [NotNull] IDiagnosticsLogger<TLoggerCategory> logger)
             where TLoggerCategory : LoggerCategory<TLoggerCategory>, new()
-            => _warningBehavior == WarningBehavior.Log
-                ? logger.Logger.IsEnabled(Level) ? WarningBehavior.Log : WarningBehavior.Ignore
-                : _warningBehavior;
+            => _warningBehavior;
 
         internal sealed class MessageExtractingLogger : ILogger
         {

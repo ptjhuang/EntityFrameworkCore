@@ -9,6 +9,7 @@ using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Utilities;
 using Microsoft.Extensions.Caching.Memory;
@@ -105,6 +106,41 @@ namespace Microsoft.EntityFrameworkCore
         /// <returns> The same builder instance so that multiple calls can be chained. </returns>
         public virtual DbContextOptionsBuilder UseLoggerFactory([CanBeNull] ILoggerFactory loggerFactory)
             => WithOption(e => e.WithLoggerFactory(loggerFactory));
+
+        public virtual DbContextOptionsBuilder LogTo(
+            [NotNull] Action<string> sink,
+            LogLevel minimumLevel = LogLevel.Debug,
+            SimpleLoggerFormatOptions formatOptions = SimpleLoggerFormatOptions.Default)
+            => LogTo(sink, (i, l) => l >= minimumLevel, formatOptions);
+
+        public virtual DbContextOptionsBuilder LogTo(
+            [NotNull] Action<string> sink,
+            [NotNull] Func<EventId, LogLevel, bool> filter,
+            SimpleLoggerFormatOptions formatOptions = SimpleLoggerFormatOptions.Default)
+            => WithOption(e => e.WithSimpleLogger(new SimpleLogger(sink, filter, formatOptions)));
+
+        public virtual DbContextOptionsBuilder LogTo<TLoggerCategory>(
+            [NotNull] Action<string> sink,
+            LogLevel minimumLevel = LogLevel.Debug,
+            SimpleLoggerFormatOptions formatOptions = SimpleLoggerFormatOptions.Default)
+            where TLoggerCategory : LoggerCategory<TLoggerCategory>, new()
+            => LogTo<TLoggerCategory>(sink, (i, l) => l >= minimumLevel, formatOptions);
+
+        public virtual DbContextOptionsBuilder LogTo<TLoggerCategory>(
+            [NotNull] Action<string> sink,
+            [NotNull] Func<EventId, LogLevel, bool> filter,
+            SimpleLoggerFormatOptions formatOptions = SimpleLoggerFormatOptions.Default)
+            where TLoggerCategory : LoggerCategory<TLoggerCategory>, new()
+        {
+            var categoryName = new TLoggerCategory().ToString();
+
+            return WithOption(
+                e => e.WithSimpleLogger(
+                    new SimpleLogger(
+                        sink,
+                        (i, l) => i.Name.StartsWith(categoryName, StringComparison.Ordinal) && filter(i, l),
+                        formatOptions)));
+        }
 
         /// <summary>
         ///     <para>

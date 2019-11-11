@@ -57,15 +57,28 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     exception);
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new DbContextErrorEventData(
-                        definition,
-                        SaveChangesFailed,
-                        context,
-                        exception));
+                var eventData = new DbContextErrorEventData(
+                    definition,
+                    SaveChangesFailed,
+                    context,
+                    exception);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -98,15 +111,28 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     exception);
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new DbContextErrorEventData(
-                        definition,
-                        OptimisticConcurrencyException,
-                        context,
-                        exception));
+                var eventData = new DbContextErrorEventData(
+                    definition,
+                    OptimisticConcurrencyException,
+                    context,
+                    exception);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -139,15 +165,28 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     dependent1.DisplayName(), dependent2.DisplayName());
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new SharedDependentEntityEventData(
-                        definition,
-                        DuplicateDependentEntityTypeInstanceWarning,
-                        dependent1,
-                        dependent2));
+                var eventData = new SharedDependentEntityEventData(
+                    definition,
+                    DuplicateDependentEntityTypeInstanceWarning,
+                    dependent1,
+                    dependent2);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -181,15 +220,28 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     exception);
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new DbContextTypeErrorEventData(
-                        definition,
-                        QueryIterationFailed,
-                        contextType,
-                        exception));
+                var eventData = new DbContextTypeErrorEventData(
+                    definition,
+                    QueryIterationFailed,
+                    contextType,
+                    exception);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -413,15 +465,28 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     expressionPrinter.Print(queryExecutorExpression));
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new QueryExpressionEventData(
-                        definition,
-                        QueryExecutionPlanned,
-                        queryExecutorExpression,
-                        expressionPrinter));
+                var eventData = new QueryExpressionEventData(
+                    definition,
+                    QueryExecutionPlanned,
+                    queryExecutorExpression,
+                    expressionPrinter);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -449,13 +514,26 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                 definition.Log(diagnostics, warningBehavior);
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new EventData(
-                        definition,
-                        (d, p) => ((EventDefinition)d).GenerateMessage()));
+                var eventData = new EventData(
+                    definition,
+                    (d, p) => ((EventDefinition)d).GenerateMessage());
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -517,14 +595,27 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     $"{navigation.DeclaringEntityType.Name}.{navigation.GetTargetType().Name}");
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new NavigationEventData(
-                        definition,
-                        PossibleUnintendedCollectionNavigationNullComparisonWarning,
-                        navigation));
+                var eventData = new NavigationEventData(
+                    definition,
+                    PossibleUnintendedCollectionNavigationNullComparisonWarning,
+                    navigation);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -557,15 +648,28 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     left, right);
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new BinaryExpressionEventData(
-                        definition,
-                        PossibleUnintendedReferenceComparisonWarning,
-                        left,
-                        right));
+                var eventData = new BinaryExpressionEventData(
+                    definition,
+                    PossibleUnintendedReferenceComparisonWarning,
+                    left,
+                    right);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -593,14 +697,27 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                 definition.Log(diagnostics, warningBehavior);
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new ServiceProviderEventData(
-                        definition,
-                        (d, p) => ((EventDefinition)d).GenerateMessage(),
-                        serviceProvider));
+                var eventData = new ServiceProviderEventData(
+                    definition,
+                    (d, p) => ((EventDefinition)d).GenerateMessage(),
+                    serviceProvider);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -621,14 +738,27 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                 definition.Log(diagnostics, warningBehavior);
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new ServiceProvidersEventData(
-                        definition,
-                        (d, p) => ((EventDefinition)d).GenerateMessage(),
-                        serviceProviders));
+                var eventData = new ServiceProvidersEventData(
+                    definition,
+                    (d, p) => ((EventDefinition)d).GenerateMessage(),
+                    serviceProviders);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -654,15 +784,28 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     GenerateDebugInfoString(newDebugInfo, cachedDebugInfos));
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new ServiceProviderDebugInfoEventData(
-                        definition,
-                        (d, p) => ServiceProviderDebugInfo(d, p),
-                        newDebugInfo,
-                        cachedDebugInfos));
+                var eventData = new ServiceProviderDebugInfoEventData(
+                    definition,
+                    (d, p) => ServiceProviderDebugInfo(d, p),
+                    newDebugInfo,
+                    cachedDebugInfos);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -742,15 +885,28 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     contextOptions.BuildOptionsFragment());
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new ContextInitializedEventData(
-                        definition,
-                        ContextInitialized,
-                        context,
-                        contextOptions));
+                var eventData = new ContextInitializedEventData(
+                    definition,
+                    ContextInitialized,
+                    context,
+                    contextOptions);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -791,16 +947,29 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     lastException);
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new ExecutionStrategyEventData(
-                        definition,
-                        ExecutionStrategyRetrying,
-                        exceptionsEncountered,
-                        delay,
-                        async));
+                var eventData = new ExecutionStrategyEventData(
+                    definition,
+                    ExecutionStrategyRetrying,
+                    exceptionsEncountered,
+                    delay,
+                    async);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -836,16 +1005,29 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     navigationName, entityType.GetType().ShortDisplayName());
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new LazyLoadingEventData(
-                        definition,
-                        LazyLoadOnDisposedContextWarning,
-                        context,
-                        entityType,
-                        navigationName));
+                var eventData = new LazyLoadingEventData(
+                    definition,
+                    LazyLoadOnDisposedContextWarning,
+                    context,
+                    entityType,
+                    navigationName);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -880,16 +1062,29 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     navigationName, entityType.GetType().ShortDisplayName());
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new LazyLoadingEventData(
-                        definition,
-                        NavigationLazyLoading,
-                        context,
-                        entityType,
-                        navigationName));
+                var eventData = new LazyLoadingEventData(
+                    definition,
+                    NavigationLazyLoading,
+                    context,
+                    entityType,
+                    navigationName);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -924,16 +1119,29 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     navigationName, entityType.GetType().ShortDisplayName());
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new LazyLoadingEventData(
-                        definition,
-                        DetachedLazyLoadingWarning,
-                        context,
-                        entityType,
-                        navigationName));
+                var eventData = new LazyLoadingEventData(
+                    definition,
+                    DetachedLazyLoadingWarning,
+                    context,
+                    entityType,
+                    navigationName);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -964,14 +1172,27 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     property.Name, property.DeclaringEntityType.DisplayName());
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new PropertyEventData(
-                        definition,
-                        ShadowPropertyCreated,
-                        property));
+                var eventData = new PropertyEventData(
+                    definition,
+                    ShadowPropertyCreated,
+                    property);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -1002,14 +1223,27 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     property.Name, property.DeclaringEntityType.DisplayName());
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new PropertyEventData(
-                        definition,
-                        CollectionWithoutComparer,
-                        property));
+                var eventData = new PropertyEventData(
+                    definition,
+                    CollectionWithoutComparer,
+                    property);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -1042,15 +1276,28 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     redundantIndex.Format(), redundantIndex.First().DeclaringType.DisplayName(), otherIndex.Format());
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new TwoPropertyBaseCollectionsEventData(
-                        definition,
-                        RedundantIndexRemoved,
-                        redundantIndex,
-                        otherIndex));
+                var eventData = new TwoPropertyBaseCollectionsEventData(
+                    definition,
+                    RedundantIndexRemoved,
+                    redundantIndex,
+                    otherIndex);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -1084,14 +1331,27 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     redundantForeignKey.Properties.Format(), redundantForeignKey.DeclaringEntityType.DisplayName());
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new ForeignKeyEventData(
-                        definition,
-                        RedundantForeignKeyWarning,
-                        redundantForeignKey));
+                var eventData = new ForeignKeyEventData(
+                    definition,
+                    RedundantForeignKeyWarning,
+                    redundantForeignKey);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -1127,15 +1387,28 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     principalKeyProperties.Format(includeTypes: true));
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new TwoPropertyBaseCollectionsEventData(
-                        definition,
-                        IncompatibleMatchingForeignKeyProperties,
-                        foreignKeyProperties,
-                        principalKeyProperties));
+                var eventData = new TwoPropertyBaseCollectionsEventData(
+                    definition,
+                    IncompatibleMatchingForeignKeyProperties,
+                    foreignKeyProperties,
+                    principalKeyProperties);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -1168,14 +1441,27 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     navigation.Name, navigation.DeclaringEntityType.DisplayName());
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new NavigationEventData(
-                        definition,
-                        RequiredAttributeInverted,
-                        navigation));
+                var eventData = new NavigationEventData(
+                    definition,
+                    RequiredAttributeInverted,
+                    navigation);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -1206,14 +1492,27 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     navigation.Name, navigation.DeclaringEntityType.DisplayName());
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new NavigationEventData(
-                        definition,
-                        NonNullableInverted,
-                        navigation));
+                var eventData = new NavigationEventData(
+                    definition,
+                    NonNullableInverted,
+                    navigation);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -1249,15 +1548,28 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     secondNavigation.Name);
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new TwoPropertyBaseCollectionsEventData(
-                        definition,
-                        RequiredAttributeOnBothNavigations,
-                        new[] { firstNavigation },
-                        new[] { secondNavigation }));
+                var eventData = new TwoPropertyBaseCollectionsEventData(
+                    definition,
+                    RequiredAttributeOnBothNavigations,
+                    new[] { firstNavigation },
+                    new[] { secondNavigation });
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -1299,15 +1611,28 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     secondNavigation.Name);
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new TwoPropertyBaseCollectionsEventData(
-                        definition,
-                        NonNullableReferenceOnBothNavigations,
-                        new[] { firstNavigation },
-                        new[] { secondNavigation }));
+                var eventData = new TwoPropertyBaseCollectionsEventData(
+                    definition,
+                    NonNullableReferenceOnBothNavigations,
+                    new[] { firstNavigation },
+                    new[] { secondNavigation });
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -1344,14 +1669,27 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     navigation.Name, navigation.DeclaringEntityType.DisplayName());
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new NavigationEventData(
-                        definition,
-                        RequiredAttributeOnDependent,
-                        navigation));
+                var eventData = new NavigationEventData(
+                    definition,
+                    RequiredAttributeOnDependent,
+                    navigation);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -1382,14 +1720,27 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     navigation.Name, navigation.DeclaringEntityType.DisplayName());
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new NavigationEventData(
-                        definition,
-                        NonNullableReferenceOnDependent,
-                        navigation));
+                var eventData = new NavigationEventData(
+                    definition,
+                    NonNullableReferenceOnDependent,
+                    navigation);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -1420,14 +1771,27 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     navigation.Name, navigation.DeclaringEntityType.DisplayName());
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new NavigationEventData(
-                        definition,
-                        RequiredAttributeOnCollection,
-                        navigation));
+                var eventData = new NavigationEventData(
+                    definition,
+                    RequiredAttributeOnCollection,
+                    navigation);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -1461,14 +1825,27 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     declaringTypeName);
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new ForeignKeyEventData(
-                        definition,
-                        ConflictingShadowForeignKeysWarning,
-                        foreignKey));
+                var eventData = new ForeignKeyEventData(
+                    definition,
+                    ConflictingShadowForeignKeysWarning,
+                    foreignKey);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -1506,15 +1883,28 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     firstProperty.DeclaringEntityType.DisplayName());
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new TwoPropertyBaseCollectionsEventData(
-                        definition,
-                        MultiplePrimaryKeyCandidates,
-                        new[] { firstProperty },
-                        new[] { secondProperty }));
+                var eventData = new TwoPropertyBaseCollectionsEventData(
+                    definition,
+                    MultiplePrimaryKeyCandidates,
+                    new[] { firstProperty },
+                    new[] { secondProperty });
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -1555,15 +1945,28 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     Property.Format(secondPropertyCollection.Select(p => p.Item1?.Name)));
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new TwoUnmappedPropertyCollectionsEventData(
-                        definition,
-                        MultipleNavigationProperties,
-                        firstPropertyCollection,
-                        secondPropertyCollection));
+                var eventData = new TwoUnmappedPropertyCollectionsEventData(
+                    definition,
+                    MultipleNavigationProperties,
+                    firstPropertyCollection,
+                    secondPropertyCollection);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -1603,15 +2006,28 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     inverseNavigation.Name);
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new TwoUnmappedPropertyCollectionsEventData(
-                        definition,
-                        MultipleInversePropertiesSameTargetWarning,
-                        conflictingNavigations,
-                        new[] { new Tuple<MemberInfo, Type>(inverseNavigation, targetType) }));
+                var eventData = new TwoUnmappedPropertyCollectionsEventData(
+                    definition,
+                    MultipleInversePropertiesSameTargetWarning,
+                    conflictingNavigations,
+                    new[] { new Tuple<MemberInfo, Type>(inverseNavigation, targetType) });
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -1657,19 +2073,32 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     definingNavigation.Name);
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new TwoUnmappedPropertyCollectionsEventData(
-                        definition,
-                        NonDefiningInverseNavigationWarning,
-                        new[] { new Tuple<MemberInfo, Type>(navigation, declaringType.ClrType) },
-                        new[]
-                        {
-                            new Tuple<MemberInfo, Type>(inverseNavigation, targetType.ClrType),
-                            new Tuple<MemberInfo, Type>(definingNavigation, targetType.ClrType)
-                        }));
+                var eventData = new TwoUnmappedPropertyCollectionsEventData(
+                    definition,
+                    NonDefiningInverseNavigationWarning,
+                    new[] { new Tuple<MemberInfo, Type>(navigation, declaringType.ClrType) },
+                    new[]
+                    {
+                        new Tuple<MemberInfo, Type>(inverseNavigation, targetType.ClrType),
+                        new Tuple<MemberInfo, Type>(definingNavigation, targetType.ClrType)
+                    });
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -1720,19 +2149,32 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     ownershipNavigation.Name);
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new TwoUnmappedPropertyCollectionsEventData(
-                        definition,
-                        NonOwnershipInverseNavigationWarning,
-                        new[] { new Tuple<MemberInfo, Type>(navigation, declaringType.ClrType) },
-                        new[]
-                        {
-                            new Tuple<MemberInfo, Type>(inverseNavigation, targetType.ClrType),
-                            new Tuple<MemberInfo, Type>(ownershipNavigation, targetType.ClrType)
-                        }));
+                var eventData = new TwoUnmappedPropertyCollectionsEventData(
+                    definition,
+                    NonOwnershipInverseNavigationWarning,
+                    new[] { new Tuple<MemberInfo, Type>(navigation, declaringType.ClrType) },
+                    new[]
+                    {
+                        new Tuple<MemberInfo, Type>(inverseNavigation, targetType.ClrType),
+                        new Tuple<MemberInfo, Type>(ownershipNavigation, targetType.ClrType)
+                    });
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -1782,25 +2224,38 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     secondProperty.Name);
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new TwoUnmappedPropertyCollectionsEventData(
-                        definition,
-                        ForeignKeyAttributesOnBothPropertiesWarning,
-                        new[]
-                        {
-                            new Tuple<MemberInfo, Type>(
-                                firstNavigation.GetIdentifyingMemberInfo(), firstNavigation.DeclaringEntityType.ClrType),
-                            new Tuple<MemberInfo, Type>(firstProperty, firstNavigation.DeclaringEntityType.ClrType)
-                        },
-                        new[]
-                        {
-                            new Tuple<MemberInfo, Type>(
-                                secondNavigation.GetIdentifyingMemberInfo(), secondNavigation.DeclaringEntityType.ClrType),
-                            new Tuple<MemberInfo, Type>(secondProperty, secondNavigation.DeclaringEntityType.ClrType)
-                        }));
+                var eventData = new TwoUnmappedPropertyCollectionsEventData(
+                    definition,
+                    ForeignKeyAttributesOnBothPropertiesWarning,
+                    new[]
+                    {
+                        new Tuple<MemberInfo, Type>(
+                            firstNavigation.GetIdentifyingMemberInfo(), firstNavigation.DeclaringEntityType.ClrType),
+                        new Tuple<MemberInfo, Type>(firstProperty, firstNavigation.DeclaringEntityType.ClrType)
+                    },
+                    new[]
+                    {
+                        new Tuple<MemberInfo, Type>(
+                            secondNavigation.GetIdentifyingMemberInfo(), secondNavigation.DeclaringEntityType.ClrType),
+                        new Tuple<MemberInfo, Type>(secondProperty, secondNavigation.DeclaringEntityType.ClrType)
+                    });
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -1846,15 +2301,28 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     secondNavigation.Name);
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new TwoPropertyBaseCollectionsEventData(
-                        definition,
-                        ForeignKeyAttributesOnBothNavigationsWarning,
-                        new[] { firstNavigation },
-                        new[] { secondNavigation }));
+                var eventData = new TwoPropertyBaseCollectionsEventData(
+                    definition,
+                    ForeignKeyAttributesOnBothNavigationsWarning,
+                    new[] { firstNavigation },
+                    new[] { secondNavigation });
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -1896,18 +2364,31 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     property.Name);
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new TwoUnmappedPropertyCollectionsEventData(
-                        definition,
-                        ConflictingForeignKeyAttributesOnNavigationAndPropertyWarning,
-                        new[]
-                        {
-                            new Tuple<MemberInfo, Type>(navigation.GetIdentifyingMemberInfo(), navigation.DeclaringEntityType.ClrType)
-                        },
-                        new[] { new Tuple<MemberInfo, Type>(property, property.DeclaringType) }));
+                var eventData = new TwoUnmappedPropertyCollectionsEventData(
+                    definition,
+                    ConflictingForeignKeyAttributesOnNavigationAndPropertyWarning,
+                    new[]
+                    {
+                        new Tuple<MemberInfo, Type>(navigation.GetIdentifyingMemberInfo(), navigation.DeclaringEntityType.ClrType)
+                    },
+                    new[] { new Tuple<MemberInfo, Type>(property, property.DeclaringType) });
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -1945,14 +2426,27 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     context.GetType().ShortDisplayName());
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new DbContextEventData(
-                        definition,
-                        DetectChangesStarting,
-                        context));
+                var eventData = new DbContextEventData(
+                    definition,
+                    DetectChangesStarting,
+                    context);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -1983,14 +2477,27 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     context.GetType().ShortDisplayName());
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new DbContextEventData(
-                        definition,
-                        DetectChangesCompleted,
-                        context));
+                var eventData = new DbContextEventData(
+                    definition,
+                    DetectChangesCompleted,
+                    context);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -2028,17 +2535,30 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     property.Name);
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new PropertyChangedEventData(
-                        definition,
-                        PropertyChangeDetected,
-                        new EntityEntry(internalEntityEntry),
-                        property,
-                        oldValue,
-                        newValue));
+                var eventData = new PropertyChangedEventData(
+                    definition,
+                    PropertyChangeDetected,
+                    new EntityEntry(internalEntityEntry),
+                    property,
+                    oldValue,
+                    newValue);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -2081,17 +2601,30 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     internalEntityEntry.BuildCurrentValuesString(property.DeclaringEntityType.FindPrimaryKey().Properties));
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new PropertyChangedEventData(
-                        definition,
-                        PropertyChangeDetectedSensitive,
-                        new EntityEntry(internalEntityEntry),
-                        property,
-                        oldValue,
-                        newValue));
+                var eventData = new PropertyChangedEventData(
+                    definition,
+                    PropertyChangeDetectedSensitive,
+                    new EntityEntry(internalEntityEntry),
+                    property,
+                    oldValue,
+                    newValue);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -2134,17 +2667,30 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     property.Name);
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new PropertyChangedEventData(
-                        definition,
-                        ForeignKeyChangeDetected,
-                        new EntityEntry(internalEntityEntry),
-                        property,
-                        oldValue,
-                        newValue));
+                var eventData = new PropertyChangedEventData(
+                    definition,
+                    ForeignKeyChangeDetected,
+                    new EntityEntry(internalEntityEntry),
+                    property,
+                    oldValue,
+                    newValue);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -2187,17 +2733,30 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     internalEntityEntry.BuildCurrentValuesString(property.DeclaringEntityType.FindPrimaryKey().Properties));
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new PropertyChangedEventData(
-                        definition,
-                        ForeignKeyChangeDetectedSensitive,
-                        new EntityEntry(internalEntityEntry),
-                        property,
-                        oldValue,
-                        newValue));
+                var eventData = new PropertyChangedEventData(
+                    definition,
+                    ForeignKeyChangeDetectedSensitive,
+                    new EntityEntry(internalEntityEntry),
+                    property,
+                    oldValue,
+                    newValue);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -2242,17 +2801,30 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     navigation.Name);
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new CollectionChangedEventData(
-                        definition,
-                        CollectionChangeDetected,
-                        new EntityEntry(internalEntityEntry),
-                        navigation,
-                        added,
-                        removed));
+                var eventData = new CollectionChangedEventData(
+                    definition,
+                    CollectionChangeDetected,
+                    new EntityEntry(internalEntityEntry),
+                    navigation,
+                    added,
+                    removed);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -2297,17 +2869,30 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     internalEntityEntry.BuildCurrentValuesString(navigation.DeclaringEntityType.FindPrimaryKey().Properties));
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new CollectionChangedEventData(
-                        definition,
-                        CollectionChangeDetectedSensitive,
-                        new EntityEntry(internalEntityEntry),
-                        navigation,
-                        added,
-                        removed));
+                var eventData = new CollectionChangedEventData(
+                    definition,
+                    CollectionChangeDetectedSensitive,
+                    new EntityEntry(internalEntityEntry),
+                    navigation,
+                    added,
+                    removed);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -2350,17 +2935,30 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     navigation.Name);
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new ReferenceChangedEventData(
-                        definition,
-                        ReferenceChangeDetected,
-                        new EntityEntry(internalEntityEntry),
-                        navigation,
-                        oldValue,
-                        newValue));
+                var eventData = new ReferenceChangedEventData(
+                    definition,
+                    ReferenceChangeDetected,
+                    new EntityEntry(internalEntityEntry),
+                    navigation,
+                    oldValue,
+                    newValue);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -2401,17 +2999,30 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     internalEntityEntry.BuildCurrentValuesString(navigation.DeclaringEntityType.FindPrimaryKey().Properties));
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new ReferenceChangedEventData(
-                        definition,
-                        ReferenceChangeDetectedSensitive,
-                        new EntityEntry(internalEntityEntry),
-                        navigation,
-                        oldValue,
-                        newValue));
+                var eventData = new ReferenceChangedEventData(
+                    definition,
+                    ReferenceChangeDetectedSensitive,
+                    new EntityEntry(internalEntityEntry),
+                    navigation,
+                    oldValue,
+                    newValue);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -2446,14 +3057,27 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     internalEntityEntry.EntityType.ShortName());
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new EntityEntryEventData(
-                        definition,
-                        StartedTracking,
-                        new EntityEntry(internalEntityEntry)));
+                var eventData = new EntityEntryEventData(
+                    definition,
+                    StartedTracking,
+                    new EntityEntry(internalEntityEntry));
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -2488,14 +3112,27 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     internalEntityEntry.BuildCurrentValuesString(internalEntityEntry.EntityType.FindPrimaryKey().Properties));
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new EntityEntryEventData(
-                        definition,
-                        StartedTrackingSensitive,
-                        new EntityEntry(internalEntityEntry)));
+                var eventData = new EntityEntryEventData(
+                    definition,
+                    StartedTrackingSensitive,
+                    new EntityEntry(internalEntityEntry));
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -2536,16 +3173,29 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     newState);
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new StateChangedEventData(
-                        definition,
-                        StateChanged,
-                        new EntityEntry(internalEntityEntry),
-                        oldState,
-                        newState));
+                var eventData = new StateChangedEventData(
+                    definition,
+                    StateChanged,
+                    new EntityEntry(internalEntityEntry),
+                    oldState,
+                    newState);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -2588,16 +3238,29 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     newState);
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new StateChangedEventData(
-                        definition,
-                        StateChangedSensitive,
-                        new EntityEntry(internalEntityEntry),
-                        oldState,
-                        newState));
+                var eventData = new StateChangedEventData(
+                    definition,
+                    StateChangedSensitive,
+                    new EntityEntry(internalEntityEntry),
+                    oldState,
+                    newState);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -2643,16 +3306,29 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     internalEntityEntry.EntityType.ShortName());
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new PropertyValueEventData(
-                        definition,
-                        ValueGenerated,
-                        new EntityEntry(internalEntityEntry),
-                        property,
-                        value));
+                var eventData = new PropertyValueEventData(
+                    definition,
+                    ValueGenerated,
+                    new EntityEntry(internalEntityEntry),
+                    property,
+                    value);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -2697,16 +3373,29 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     internalEntityEntry.EntityType.ShortName());
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new PropertyValueEventData(
-                        definition,
-                        ValueGeneratedSensitive,
-                        new EntityEntry(internalEntityEntry),
-                        property,
-                        value));
+                var eventData = new PropertyValueEventData(
+                    definition,
+                    ValueGeneratedSensitive,
+                    new EntityEntry(internalEntityEntry),
+                    property,
+                    value);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -2747,16 +3436,29 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     internalParentEntry.EntityType.ShortName());
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new CascadeDeleteEventData(
-                        definition,
-                        CascadeDelete,
-                        new EntityEntry(internalChildEntry),
-                        new EntityEntry(internalParentEntry),
-                        state));
+                var eventData = new CascadeDeleteEventData(
+                    definition,
+                    CascadeDelete,
+                    new EntityEntry(internalChildEntry),
+                    new EntityEntry(internalParentEntry),
+                    state);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -2798,16 +3500,29 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     internalParentEntry.BuildCurrentValuesString(internalParentEntry.EntityType.FindPrimaryKey().Properties));
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new CascadeDeleteEventData(
-                        definition,
-                        CascadeDeleteSensitive,
-                        new EntityEntry(internalChildEntry),
-                        new EntityEntry(internalParentEntry),
-                        state));
+                var eventData = new CascadeDeleteEventData(
+                    definition,
+                    CascadeDeleteSensitive,
+                    new EntityEntry(internalChildEntry),
+                    new EntityEntry(internalParentEntry),
+                    state);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -2849,16 +3564,29 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     parentEntityType.ShortName());
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new CascadeDeleteOrphanEventData(
-                        definition,
-                        CascadeDeleteOrphan,
-                        new EntityEntry(internalChildEntry),
-                        parentEntityType,
-                        state));
+                var eventData = new CascadeDeleteOrphanEventData(
+                    definition,
+                    CascadeDeleteOrphan,
+                    new EntityEntry(internalChildEntry),
+                    parentEntityType,
+                    state);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -2899,16 +3627,29 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     parentEntityType.ShortName());
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new CascadeDeleteOrphanEventData(
-                        definition,
-                        CascadeDeleteOrphanSensitive,
-                        new EntityEntry(internalChildEntry),
-                        parentEntityType,
-                        state));
+                var eventData = new CascadeDeleteOrphanEventData(
+                    definition,
+                    CascadeDeleteOrphanSensitive,
+                    new EntityEntry(internalChildEntry),
+                    parentEntityType,
+                    state);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -2943,14 +3684,27 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     context.GetType().ShortDisplayName());
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new DbContextEventData(
-                        definition,
-                        SaveChangesStarting,
-                        context));
+                var eventData = new DbContextEventData(
+                    definition,
+                    SaveChangesStarting,
+                    context);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -2984,15 +3738,28 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     entitiesSavedCount);
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new SaveChangesCompletedEventData(
-                        definition,
-                        SaveChangesCompleted,
-                        context,
-                        entitiesSavedCount));
+                var eventData = new SaveChangesCompletedEventData(
+                    definition,
+                    SaveChangesCompleted,
+                    context,
+                    entitiesSavedCount);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -3025,14 +3792,27 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
                     context.GetType().ShortDisplayName());
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new DbContextEventData(
-                        definition,
-                        ContextDisposed,
-                        context));
+                var eventData = new DbContextEventData(
+                    definition,
+                    ContextDisposed,
+                    context);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 

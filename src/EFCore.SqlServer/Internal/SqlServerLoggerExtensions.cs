@@ -37,14 +37,27 @@ namespace Microsoft.EntityFrameworkCore.SqlServer.Internal
                     property.Name, property.DeclaringEntityType.DisplayName());
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new PropertyEventData(
-                        definition,
-                        DecimalTypeDefaultWarning,
-                        property));
+                var eventData = new PropertyEventData(
+                    definition,
+                    DecimalTypeDefaultWarning,
+                    property);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -78,14 +91,27 @@ namespace Microsoft.EntityFrameworkCore.SqlServer.Internal
                     property.Name, property.DeclaringEntityType.DisplayName());
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new PropertyEventData(
-                        definition,
-                        ByteIdentityColumnWarning,
-                        property));
+                var eventData = new PropertyEventData(
+                    definition,
+                    ByteIdentityColumnWarning,
+                    property);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 

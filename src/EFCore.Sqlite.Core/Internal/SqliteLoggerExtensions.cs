@@ -37,7 +37,12 @@ namespace Microsoft.EntityFrameworkCore.Sqlite.Internal
                     entityType.DisplayName(), schema);
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
                 diagnostics.DiagnosticSource.Write(
                     definition.EventId.Name,
@@ -79,7 +84,12 @@ namespace Microsoft.EntityFrameworkCore.Sqlite.Internal
                     sequence.Name);
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
                 diagnostics.DiagnosticSource.Write(
                     definition.EventId.Name,

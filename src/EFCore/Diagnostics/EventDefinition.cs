@@ -67,7 +67,10 @@ namespace Microsoft.EntityFrameworkCore.Diagnostics
             switch (warningBehavior)
             {
                 case WarningBehavior.Log:
-                    _logAction(logger.Logger, null);
+                    if (logger.Logger.IsEnabled(Level))
+                    {
+                        _logAction(logger.Logger, exception);
+                    }
                     break;
                 case WarningBehavior.Throw:
                     throw WarningAsError(GenerateMessage());

@@ -34,13 +34,26 @@ namespace Microsoft.EntityFrameworkCore.InMemory.Internal
                 definition.Log(diagnostics, warningBehavior);
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new EventData(
-                        definition,
-                        (d, _) => ((EventDefinition)d).GenerateMessage()));
+                var eventData = new EventData(
+                    definition,
+                    (d, _) => ((EventDefinition)d).GenerateMessage());
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
@@ -66,15 +79,28 @@ namespace Microsoft.EntityFrameworkCore.InMemory.Internal
                     rowsAffected);
             }
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
+            var diagnosticSourceEnabled = diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name);
+            var simpleLogEnabled = warningBehavior == WarningBehavior.Log
+                && diagnostics.SimpleLogger.ShouldLog(definition.EventId, definition.Level);
+
+            if (diagnosticSourceEnabled
+                || simpleLogEnabled)
             {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new SaveChangesEventData(
-                        definition,
-                        ChangesSaved,
-                        entries,
-                        rowsAffected));
+                var eventData = new SaveChangesEventData(
+                    definition,
+                    ChangesSaved,
+                    entries,
+                    rowsAffected);
+
+                if (diagnosticSourceEnabled)
+                {
+                    diagnostics.DiagnosticSource.Write(definition.EventId.Name, eventData);
+                }
+
+                if (simpleLogEnabled)
+                {
+                    diagnostics.SimpleLogger.Log(eventData);
+                }
             }
         }
 
